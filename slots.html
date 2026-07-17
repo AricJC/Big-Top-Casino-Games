@@ -53,11 +53,21 @@
         }
         .back { margin-top: 18px; font-size: clamp(12px, 3vw, 14px); color: #aaa; text-decoration: none; }
         .back:hover { color: #e94560; }
+        .app-link button {
+            background: none;
+            border: none;
+            color: #e94560;
+            font-size: inherit;
+            cursor: pointer;
+            padding: 0;
+            font-family: inherit;
+        }
+        .app-link button:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <div class="app-link">&#x1F4F1; <a href="https://eventmobi.com/iowaleagueconference2026/" target="_blank">Back to Conference App</a></div>
+    <div class="app-link">&#x1F4F1; <button onclick="window.close()">Back to Conference App</button></div>
 
     <h2>Big Top Slots</h2>
 

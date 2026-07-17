@@ -18,14 +18,17 @@
             padding: 20px;
             box-sizing: border-box;
         }
-        .app-link {
-            font-size: clamp(12px, 3vw, 14px);
-            margin-bottom: 24px;
-            color: #aaa;
-            text-align: center;
+        .app-link { font-size: clamp(12px, 3vw, 14px); margin-bottom: 24px; color: #aaa; text-align: center; }
+        .app-link button {
+            background: none;
+            border: none;
+            color: #e94560;
+            font-size: inherit;
+            cursor: pointer;
+            padding: 0;
+            font-family: inherit;
         }
-        .app-link a { color: #e94560; text-decoration: none; }
-        .app-link a:hover { text-decoration: underline; }
+        .app-link button:hover { text-decoration: underline; }
         h1 { font-size: clamp(22px, 6vw, 36px); text-align: center; margin-bottom: 8px; }
         .subtitle { text-align: center; color: #aaa; margin: 0 0 40px; font-size: clamp(13px, 3.5vw, 16px); }
         .cards { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
@@ -54,9 +57,8 @@
 </head>
 <body>
 
-    <div class="app-link">&#x1F4F1; <a href="https://eventmobi.com/iowaleagueconference2026/" target="_blank">Back to Conference App</a></div>
+    <div class="app-link">&#x1F4F1; <button onclick="window.close()">Back to Conference App</button></div>
 
-    <!-- &#x1F3AA; = circus tent, &#x1F3AD; = drama masks, &#x1F3B0; = slot machine -->
     <h1>&#x1F3AA; Big Top Casino</h1>
     <p class="subtitle">Pick a game and play!</p>
 
