@@ -2,72 +2,113 @@
 <html>
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Big Top Slots</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+        h2 { font-size: clamp(20px, 6vw, 28px); margin-bottom: 4px; }
+        .scorebar { display: flex; gap: 30px; margin-bottom: 14px; font-size: clamp(13px, 3.5vw, 16px); color: #aaa; }
+        .accent { color: #e94560; font-weight: bold; }
+        .row { display: flex; gap: 0; align-items: center; margin-bottom: 8px; }
+        .dash { color: #fff; font-size: clamp(12px, 3vw, 16px); padding: 0 3px; }
+        .cell-top, .cell-mid {
+            background: #16213e;
+            border: 3px solid #0f3460;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cell-top { width: clamp(75px, 22vw, 100px); height: clamp(60px, 17vw, 80px);  font-size: clamp(32px, 9vw,  44px); }
+        .cell-mid { width: clamp(75px, 22vw, 100px); height: clamp(75px, 22vw, 100px); font-size: clamp(38px, 11vw, 52px); }
+        #result { font-size: clamp(13px, 3.5vw, 16px); min-height: 24px; margin-bottom: 12px; text-align: center; }
+        #spin-btn {
+            padding: clamp(12px, 3vw, 14px) clamp(28px, 8vw, 40px);
+            font-size: clamp(16px, 4.5vw, 18px);
+            cursor: pointer;
+            background: #e94560;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+        }
+        .back { margin-top: 18px; font-size: clamp(12px, 3vw, 14px); color: #aaa; text-decoration: none; }
+        .back:hover { color: #e94560; }
+    </style>
 </head>
-<body style="font-family:Arial,sans-serif;background:#1a1a2e;color:#eee;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;">
+<body>
 
-    <h2 style="margin-bottom:4px;">Big Top Slots</h2>
+    <h2>Big Top Slots</h2>
 
-    <!-- Score bar -->
-    <div style="display:flex;gap:30px;margin-bottom:14px;font-size:14px;color:#aaa;">
-        <span>Spins: <span id="spins" style="color:#e94560;font-weight:bold;">10</span></span>
-        <span>Score: <span id="score" style="color:#e94560;font-weight:bold;">0</span></span>
+    <div class="scorebar">
+        <span>Spins: <span id="spins" class="accent">10</span></span>
+        <span>Score: <span id="score" class="accent">0</span></span>
     </div>
 
     <!-- Top row -->
-    <div style="display:flex;gap:0;align-items:center;margin-bottom:8px;">
-        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
-        <div id="t1" style="width:100px;height:80px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:44px;"></div>
-        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
-        <div id="t2" style="width:100px;height:80px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:44px;"></div>
-        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
-        <div id="t3" style="width:100px;height:80px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:44px;"></div>
-        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+    <div class="row">
+        <span class="dash">&#x2014;</span>
+        <div id="t1" class="cell-top"></div>
+        <span class="dash">&#x2014;</span>
+        <div id="t2" class="cell-top"></div>
+        <span class="dash">&#x2014;</span>
+        <div id="t3" class="cell-top"></div>
+        <span class="dash">&#x2014;</span>
     </div>
 
     <!-- Middle row -->
-    <div style="display:flex;gap:0;align-items:center;margin-bottom:8px;">
-        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
-        <div id="m1" style="width:100px;height:100px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:52px;"></div>
-        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
-        <div id="m2" style="width:100px;height:100px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:52px;"></div>
-        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
-        <div id="m3" style="width:100px;height:100px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:52px;"></div>
-        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+    <div class="row">
+        <span class="dash">&#x2014;</span>
+        <div id="m1" class="cell-mid"></div>
+        <span class="dash">&#x2014;</span>
+        <div id="m2" class="cell-mid"></div>
+        <span class="dash">&#x2014;</span>
+        <div id="m3" class="cell-mid"></div>
+        <span class="dash">&#x2014;</span>
     </div>
 
     <!-- Bottom row -->
-    <div style="display:flex;gap:0;align-items:center;margin-bottom:12px;">
-        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
-        <div id="b1" style="width:100px;height:80px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:44px;"></div>
-        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
-        <div id="b2" style="width:100px;height:80px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:44px;"></div>
-        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
-        <div id="b3" style="width:100px;height:80px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:44px;"></div>
-        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+    <div class="row">
+        <span class="dash">&#x2014;</span>
+        <div id="b1" class="cell-top"></div>
+        <span class="dash">&#x2014;</span>
+        <div id="b2" class="cell-top"></div>
+        <span class="dash">&#x2014;</span>
+        <div id="b3" class="cell-top"></div>
+        <span class="dash">&#x2014;</span>
     </div>
 
-    <p id="result" style="font-size:16px;min-height:24px;margin-bottom:12px;text-align:center;"></p>
+    <p id="result"></p>
 
-    <button id="spin-btn" onclick="spin()"
-        style="padding:14px 40px;font-size:18px;cursor:pointer;background:#e94560;color:#fff;border:none;border-radius:8px;">
-        SPIN
-    </button>
+    <button id="spin-btn" onclick="spin()">SPIN</button>
+
+    <a href="index.html" class="back">â¬… Back to Games</a>
 
     <script>
         var STAR = '\u2B50';
 
         var symbols = [
-            '\uD83C\uDFAA', // ?? circus tent
-            '\uD83C\uDFA9', // ?? top hat
-            '\uD83E\uDD39', // ?? juggler
-            '\uD83E\uDD81', // ?? lion
-            '\uD83C\uDFB0', // ?? slot machine
-            '\uD83C\uDFAD', // ?? drama masks
-            '\uD83C\uDFA0', // ?? carousel
-            '\uD83C\uDFAF', // ?? bullseye
-            STAR,           // ? star
-            '\uD83C\uDFB2'  // ?? dice
+            '\uD83C\uDFAA',
+            '\uD83C\uDFA9',
+            '\uD83E\uDD39',
+            '\uD83E\uDD81',
+            '\uD83C\uDFB0',
+            '\uD83C\uDFAD',
+            '\uD83C\uDFA0',
+            '\uD83C\uDFAF',
+            STAR,
+            '\uD83C\uDFB2'
         ];
 
         var spinsLeft = 10;
@@ -90,12 +131,9 @@
             document.getElementById(prefix + '3').style.borderColor = color;
         }
 
-        // Returns { points, label } for a row
-        // isMiddle: true = middle row scoring, false = top/bottom scoring
         function scoreRow(a, b, c, isMiddle) {
             var isTriple = (a === b && b === c);
             var isPair   = (a === b || b === c || a === c);
-
             if (isTriple) {
                 if (a === STAR) return { points: 1000, label: '\u2B50\u2B50\u2B50 MEGA JACKPOT! +1000' };
                 var base = isMiddle ? 15 : 4;
@@ -142,7 +180,6 @@
                     var mScore = scoreRow(m1, m2, m3, true);
                     var bScore = scoreRow(b1, b2, b3, false);
 
-                    // Highlight winning rows
                     if (tScore.points > 0) setBorderColor('t', tScore.points >= 8 ? '#e94560' : '#aaa');
                     if (mScore.points > 0) setBorderColor('m', mScore.points >= 30 ? '#e94560' : '#aaa');
                     if (bScore.points > 0) setBorderColor('b', bScore.points >= 8 ? '#e94560' : '#aaa');
@@ -151,7 +188,6 @@
                     score += spinPoints;
                     document.getElementById('score').textContent = score;
 
-                    // Build result message — show all wins this spin
                     var msgs = [];
                     if (mScore.label) msgs.push(mScore.label);
                     if (tScore.label) msgs.push(tScore.label);

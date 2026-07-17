@@ -2,53 +2,108 @@
 <html>
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Memory Match</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a2e;
+            color: #eee;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 16px;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        h2 { font-size: clamp(20px, 6vw, 28px); margin-bottom: 8px; }
+        .topbar { display: flex; gap: 30px; align-items: center; margin-bottom: 12px; font-size: clamp(13px, 3.5vw, 16px); }
+        #countdown { font-size: clamp(36px, 12vw, 48px); font-weight: bold; color: #e94560; min-height: 56px; margin-bottom: 8px; }
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(4, clamp(60px, 20vw, 80px));
+            gap: clamp(6px, 2vw, 10px);
+        }
+        .card {
+            width: clamp(60px, 20vw, 80px);
+            height: clamp(60px, 20vw, 80px);
+            background: #0f3460;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(24px, 7vw, 32px);
+            cursor: pointer;
+            user-select: none;
+            box-sizing: border-box;
+        }
+        .card.revealed { background: #16213e; }
+        .restart-btn {
+            margin-top: 20px;
+            padding: clamp(8px, 2.5vw, 10px) clamp(18px, 5vw, 24px);
+            font-size: clamp(13px, 3.5vw, 15px);
+            cursor: pointer;
+            background: #e94560;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+        }
+        .back { margin-top: 14px; font-size: clamp(12px, 3vw, 14px); color: #aaa; text-decoration: none; }
+        .back:hover { color: #e94560; }
+        .accent { color: #e94560; font-weight: bold; }
+    </style>
 </head>
-<body style="font-family:Arial,sans-serif;background:#1a1a2e;color:#eee;display:flex;flex-direction:column;align-items:center;padding:30px 20px;margin:0;">
+<body>
 
-    <h2 style="margin-bottom:8px;">Memory Match</h2>
+    <h2>Memory Match</h2>
 
-    <div style="display:flex;gap:40px;align-items:center;margin-bottom:12px;">
-        <p id="status" style="font-size:16px;margin:0;">Get ready...</p>
-        <p style="font-size:16px;margin:0;">Score: <span id="score" style="color:#e94560;font-weight:bold;">100</span></p>
+    <div class="topbar">
+        <p id="status" style="margin:0;">Get ready...</p>
+        <p id="tries-display" style="margin:0;">Tries Left: <span id="tries" class="accent">20</span></p>
     </div>
 
-    <div id="countdown" style="font-size:48px;font-weight:bold;color:#e94560;min-height:60px;margin-bottom:8px;"></div>
+    <div id="countdown"></div>
 
-    <div id="grid" style="display:grid;grid-template-columns:repeat(4,80px);gap:10px;"></div>
+    <div id="grid"></div>
 
-    <button onclick="init()"
-        style="margin-top:20px;padding:8px 20px;font-size:15px;cursor:pointer;background:#e94560;color:#fff;border:none;border-radius:4px;">
-        Restart
-    </button>
+    <button class="restart-btn" onclick="init()">Restart</button>
+
+    <a href="index.html" class="back">&#x2B05; Back to Games</a>
 
     <script>
         var emojis = [
-            '\uD83C\uDFAA', // ?? circus tent
-            '\uD83C\uDFA9', // ?? top hat
-            '\uD83E\uDD39', // ?? juggler
-            '\uD83E\uDD81', // ?? lion
-            '\uD83C\uDFB0', // ?? slot machine
-            '\uD83C\uDFAF', // ?? bullseye
-            '\u2B50',       // ? star
-            '\uD83C\uDFB2'  // ?? dice
+            '\uD83C\uDFAA',
+            '\uD83C\uDFA9',
+            '\uD83E\uDD39',
+            '\uD83E\uDD81',
+            '\uD83C\uDFB0',
+            '\uD83C\uDFAF',
+            '\u2B50',
+            '\uD83C\uDFB2'
         ];
 
-        var flipped = [];
-        var matched = 0;
-        var lock = false;
-        var score = 100;
-        var memorizeSeconds = 5;
+        var MAX_TRIES    = 20;
+        var POINTS_EACH  = 5;   // deducted per wrong guess  (20 x 5 = 100 max)
 
-        var cardStyleHidden  = 'width:80px;height:80px;background:#0f3460;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;user-select:none;box-sizing:border-box;';
-        var cardStyleRevealed = 'width:80px;height:80px;background:#16213e;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;user-select:none;box-sizing:border-box;';
+        var flipped      = [];
+        var matched      = 0;
+        var lock         = false;
+        var triesLeft    = MAX_TRIES;
+        var score        = MAX_TRIES * POINTS_EACH;   // starts at 100, never shown until end
+        var memorizeSeconds = 5;
+        var gameOver     = false;
 
         function init() {
-            matched = 0;
-            flipped = [];
-            lock = true;
-            score = 100;
-            document.getElementById('score').textContent = score;
+            matched   = 0;
+            flipped   = [];
+            lock      = true;
+            gameOver  = false;
+            triesLeft = MAX_TRIES;
+            score     = MAX_TRIES * POINTS_EACH;
+
+            document.getElementById('tries').textContent = triesLeft;
+            document.getElementById('tries-display').style.display = '';
+            document.getElementById('status').textContent = '';
 
             var deck = emojis.concat(emojis).sort(function () { return Math.random() - 0.5; });
             var grid = document.getElementById('grid');
@@ -56,7 +111,7 @@
 
             deck.forEach(function (e) {
                 var card = document.createElement('div');
-                card.style.cssText = cardStyleRevealed;
+                card.className = 'card revealed';
                 card.dataset.val = e;
                 card.textContent = e;
                 card.addEventListener('click', flip);
@@ -67,11 +122,11 @@
         }
 
         function startCountdown(seconds) {
-            var remaining = seconds;
+            var remaining   = seconds;
             var countdownEl = document.getElementById('countdown');
-            var statusEl = document.getElementById('status');
+            var statusEl    = document.getElementById('status');
 
-            statusEl.textContent = 'Memorize the cards!';
+            statusEl.textContent    = 'Memorize the cards!';
             countdownEl.textContent = remaining;
 
             var interval = setInterval(function () {
@@ -89,17 +144,27 @@
         }
 
         function hideAllCards() {
-            var cards = document.getElementById('grid').childNodes;
-            cards.forEach(function (card) {
+            document.getElementById('grid').childNodes.forEach(function (card) {
                 card.textContent = '';
-                card.style.cssText = cardStyleHidden;
+                card.className   = 'card';
             });
         }
 
+        function endGame(won) {
+            gameOver = true;
+            lock     = true;
+            document.getElementById('tries-display').style.display = 'none';
+            if (won) {
+                document.getElementById('status').textContent = '\uD83C\uDF89 You matched them all! Score: ' + score + ' / 100';
+            } else {
+                document.getElementById('status').textContent = '\uD83D\uDEAB Out of tries! Score: ' + score + ' / 100';
+            }
+        }
+
         function flip() {
-            if (lock || this.dataset.matched || this.dataset.flipped) return;
+            if (lock || gameOver || this.dataset.matched || this.dataset.flipped) return;
             this.textContent = this.dataset.val;
-            this.style.cssText = cardStyleRevealed;
+            this.className   = 'card revealed';
             this.dataset.flipped = '1';
             flipped.push(this);
 
@@ -107,22 +172,30 @@
                 lock = true;
                 setTimeout(function () {
                     if (flipped[0].dataset.val === flipped[1].dataset.val) {
+                        // Correct match — no penalty
                         flipped.forEach(function (c) { c.dataset.matched = '1'; });
                         matched++;
+                        flipped = [];
+                        lock    = false;
                         if (matched === emojis.length) {
-                            document.getElementById('status').textContent = '\uD83C\uDF89 You matched them all! Final score: ' + score;
+                            endGame(true);
                         }
                     } else {
-                        score = Math.max(0, score - 1);
-                        document.getElementById('score').textContent = score;
+                        // Wrong guess — deduct points and use a try
+                        score     = Math.max(0, score - POINTS_EACH);
+                        triesLeft = Math.max(0, triesLeft - 1);
+                        document.getElementById('tries').textContent = triesLeft;
                         flipped.forEach(function (c) {
                             c.textContent = '';
-                            c.style.cssText = cardStyleHidden;
+                            c.className   = 'card';
                             delete c.dataset.flipped;
                         });
+                        flipped = [];
+                        lock    = false;
+                        if (triesLeft <= 0) {
+                            endGame(false);
+                        }
                     }
-                    flipped = [];
-                    lock = false;
                 }, 700);
             }
         }
