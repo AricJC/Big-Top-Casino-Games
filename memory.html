@@ -15,6 +15,7 @@
 
     <div class="topbar">
         <p id="status" style="margin:0;">Get ready...</p>
+        <p id="final-score" style="margin:0;display:none;"></p>
         <p id="tries-display" style="margin:0;">Tries Left: <span id="tries" class="accent">20</span></p>
     </div>
 
@@ -59,7 +60,9 @@
 
             document.getElementById('tries').textContent = triesLeft;
             document.getElementById('tries-display').style.display = '';
-            document.getElementById('status').textContent = '';
+            document.getElementById('final-score').style.display   = 'none';
+            document.getElementById('final-score').textContent     = '';
+            document.getElementById('status').textContent          = '';
 
             var deck = emojis.concat(emojis).sort(function () { return Math.random() - 0.5; });
             var grid = document.getElementById('grid');
@@ -110,10 +113,13 @@
             gameOver = true;
             lock     = true;
             document.getElementById('tries-display').style.display = 'none';
+            document.getElementById('final-score').style.display   = '';
             if (won) {
-                document.getElementById('status').textContent = '\uD83C\uDF89 You matched them all! Score: ' + score;
+                document.getElementById('status').textContent      = '\uD83C\uDF89 You matched them all!';
+                document.getElementById('final-score').textContent = 'Score: ' + score;
             } else {
-                document.getElementById('status').textContent = '\uD83D\uDEAB Out of tries! Score: ' + score;
+                document.getElementById('status').textContent      = '\uD83D\uDEAB Out of tries!';
+                document.getElementById('final-score').textContent = 'Score: ' + score;
             }
         }
 
