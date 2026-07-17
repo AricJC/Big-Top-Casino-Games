@@ -14,8 +14,17 @@ body {
     box-sizing: border-box;
 }
 a { text-decoration: none; }
-h1 { font-size: clamp(22px, 6vw, 36px); text-align: center; margin-bottom: 8px; }
-h2 { font-size: clamp(36px, 10vw, 52px); margin-bottom: 8px; }
+h1 {
+    font-size: clamp(22px, 6vw, 36px);
+    text-align: center;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+h2 {
+    font-size: clamp(36px, 10vw, 52px);
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
 
 /* Shared accent colour */
 .accent { color: #e94560; font-weight: bold; }
@@ -23,7 +32,7 @@ h2 { font-size: clamp(36px, 10vw, 52px); margin-bottom: 8px; }
 /* Back to Conference App */
 .app-link {
     font-size: clamp(16px, 4.5vw, 20px);
-    margin-bottom: 16px;
+    margin-bottom: 6px;
     color: #aaa;
     text-align: center;
 }
