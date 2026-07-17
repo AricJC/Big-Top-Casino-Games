@@ -16,6 +16,14 @@
             margin: 0;
             box-sizing: border-box;
         }
+        .app-link {
+            font-size: clamp(12px, 3vw, 14px);
+            margin-bottom: 16px;
+            color: #aaa;
+            text-align: center;
+        }
+        .app-link a { color: #e94560; text-decoration: none; }
+        .app-link a:hover { text-decoration: underline; }
         h2 { font-size: clamp(20px, 6vw, 28px); margin-bottom: 8px; }
         .topbar { display: flex; gap: 30px; align-items: center; margin-bottom: 12px; font-size: clamp(13px, 3.5vw, 16px); }
         #countdown { font-size: clamp(36px, 12vw, 48px); font-weight: bold; color: #e94560; min-height: 56px; margin-bottom: 8px; }
@@ -55,6 +63,8 @@
 </head>
 <body>
 
+    <div class="app-link">&#x1F4F1; <a href="https://eventmobi.com/iowaleagueconference2026/" target="_blank">Back to Conference App</a></div>
+
     <h2>Memory Match</h2>
 
     <div class="topbar">
@@ -82,16 +92,16 @@
             '\uD83C\uDFB2'
         ];
 
-        var MAX_TRIES    = 20;
-        var POINTS_EACH  = 5;   // deducted per wrong guess  (20 x 5 = 100 max)
+        var MAX_TRIES   = 20;
+        var POINTS_EACH = 5;
 
-        var flipped      = [];
-        var matched      = 0;
-        var lock         = false;
-        var triesLeft    = MAX_TRIES;
-        var score        = MAX_TRIES * POINTS_EACH;   // starts at 100, never shown until end
+        var flipped     = [];
+        var matched     = 0;
+        var lock        = false;
+        var triesLeft   = MAX_TRIES;
+        var score       = MAX_TRIES * POINTS_EACH;
         var memorizeSeconds = 5;
-        var gameOver     = false;
+        var gameOver    = false;
 
         function init() {
             matched   = 0;
@@ -172,7 +182,6 @@
                 lock = true;
                 setTimeout(function () {
                     if (flipped[0].dataset.val === flipped[1].dataset.val) {
-                        // Correct match — no penalty
                         flipped.forEach(function (c) { c.dataset.matched = '1'; });
                         matched++;
                         flipped = [];
@@ -181,7 +190,6 @@
                             endGame(true);
                         }
                     } else {
-                        // Wrong guess — deduct points and use a try
                         score     = Math.max(0, score - POINTS_EACH);
                         triesLeft = Math.max(0, triesLeft - 1);
                         document.getElementById('tries').textContent = triesLeft;
