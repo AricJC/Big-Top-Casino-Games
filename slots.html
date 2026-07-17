@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Big Top Slots</title>
+</head>
+<body style="font-family:Arial,sans-serif;background:#1a1a2e;color:#eee;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0;">
+
+    <h2 style="margin-bottom:4px;">Big Top Slots</h2>
+
+    <!-- Score bar -->
+    <div style="display:flex;gap:30px;margin-bottom:14px;font-size:14px;color:#aaa;">
+        <span>Spins: <span id="spins" style="color:#e94560;font-weight:bold;">10</span></span>
+        <span>Score: <span id="score" style="color:#e94560;font-weight:bold;">0</span></span>
+    </div>
+
+    <!-- Top row -->
+    <div style="display:flex;gap:0;align-items:center;margin-bottom:8px;">
+        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+        <div id="t1" style="width:100px;height:80px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:44px;"></div>
+        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+        <div id="t2" style="width:100px;height:80px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:44px;"></div>
+        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+        <div id="t3" style="width:100px;height:80px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:44px;"></div>
+        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+    </div>
+
+    <!-- Middle row -->
+    <div style="display:flex;gap:0;align-items:center;margin-bottom:8px;">
+        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+        <div id="m1" style="width:100px;height:100px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:52px;"></div>
+        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+        <div id="m2" style="width:100px;height:100px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:52px;"></div>
+        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+        <div id="m3" style="width:100px;height:100px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:52px;"></div>
+        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+    </div>
+
+    <!-- Bottom row -->
+    <div style="display:flex;gap:0;align-items:center;margin-bottom:12px;">
+        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+        <div id="b1" style="width:100px;height:80px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:44px;"></div>
+        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+        <div id="b2" style="width:100px;height:80px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:44px;"></div>
+        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+        <div id="b3" style="width:100px;height:80px;background:#16213e;border:3px solid #0f3460;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:44px;"></div>
+        <span style="color:#fff;font-size:16px;padding:0 4px;">&#x2014;</span>
+    </div>
+
+    <p id="result" style="font-size:16px;min-height:24px;margin-bottom:12px;text-align:center;"></p>
+
+    <button id="spin-btn" onclick="spin()"
+        style="padding:14px 40px;font-size:18px;cursor:pointer;background:#e94560;color:#fff;border:none;border-radius:8px;">
+        SPIN
+    </button>
+
+    <script>
+        var STAR = '\u2B50';
+
+        var symbols = [
+            '\uD83C\uDFAA', // ?? circus tent
+            '\uD83C\uDFA9', // ?? top hat
+            '\uD83E\uDD39', // ?? juggler
+            '\uD83E\uDD81', // ?? lion
+            '\uD83C\uDFB0', // ?? slot machine
+            '\uD83C\uDFAD', // ?? drama masks
+            '\uD83C\uDFA0', // ?? carousel
+            '\uD83C\uDFAF', // ?? bullseye
+            STAR,           // ? star
+            '\uD83C\uDFB2'  // ?? dice
+        ];
+
+        var spinsLeft = 10;
+        var score = 0;
+        var spinning = false;
+
+        function getRandom() {
+            return symbols[Math.floor(Math.random() * symbols.length)];
+        }
+
+        function setRow(prefix, s1, s2, s3) {
+            document.getElementById(prefix + '1').textContent = s1;
+            document.getElementById(prefix + '2').textContent = s2;
+            document.getElementById(prefix + '3').textContent = s3;
+        }
+
+        function setBorderColor(prefix, color) {
+            document.getElementById(prefix + '1').style.borderColor = color;
+            document.getElementById(prefix + '2').style.borderColor = color;
+            document.getElementById(prefix + '3').style.borderColor = color;
+        }
+
+        // Returns { points, label } for a row
+        // isMiddle: true = middle row scoring, false = top/bottom scoring
+        function scoreRow(a, b, c, isMiddle) {
+            var isTriple = (a === b && b === c);
+            var isPair   = (a === b || b === c || a === c);
+
+            if (isTriple) {
+                if (a === STAR) return { points: 1000, label: '\u2B50\u2B50\u2B50 MEGA JACKPOT! +1000' };
+                var base = isMiddle ? 15 : 4;
+                return { points: base * 2, label: isMiddle ? 'Center 3 of a Kind! +' + (base * 2) : 'Row 3 of a Kind! +' + (base * 2) };
+            }
+            if (isPair) {
+                if (isMiddle) return { points: 10, label: 'Center Pair! +10' };
+                return { points: 2, label: 'Pair! +2' };
+            }
+            return { points: 0, label: '' };
+        }
+
+        function spin() {
+            if (spinning || spinsLeft <= 0) return;
+            spinning = true;
+            spinsLeft--;
+            document.getElementById('spins').textContent = spinsLeft;
+            document.getElementById('result').textContent = '';
+            document.getElementById('spin-btn').style.opacity = '0.5';
+
+            var ticks = 0;
+            var maxTicks = 20;
+            var interval = setInterval(function () {
+                setRow('t', getRandom(), getRandom(), getRandom());
+                setRow('m', getRandom(), getRandom(), getRandom());
+                setRow('b', getRandom(), getRandom(), getRandom());
+                ticks++;
+
+                if (ticks >= maxTicks) {
+                    clearInterval(interval);
+
+                    var t1 = getRandom(), t2 = getRandom(), t3 = getRandom();
+                    var m1 = getRandom(), m2 = getRandom(), m3 = getRandom();
+                    var b1 = getRandom(), b2 = getRandom(), b3 = getRandom();
+                    setRow('t', t1, t2, t3);
+                    setRow('m', m1, m2, m3);
+                    setRow('b', b1, b2, b3);
+
+                    setBorderColor('t', '#0f3460');
+                    setBorderColor('m', '#0f3460');
+                    setBorderColor('b', '#0f3460');
+
+                    var tScore = scoreRow(t1, t2, t3, false);
+                    var mScore = scoreRow(m1, m2, m3, true);
+                    var bScore = scoreRow(b1, b2, b3, false);
+
+                    // Highlight winning rows
+                    if (tScore.points > 0) setBorderColor('t', tScore.points >= 8 ? '#e94560' : '#aaa');
+                    if (mScore.points > 0) setBorderColor('m', mScore.points >= 30 ? '#e94560' : '#aaa');
+                    if (bScore.points > 0) setBorderColor('b', bScore.points >= 8 ? '#e94560' : '#aaa');
+
+                    var spinPoints = tScore.points + mScore.points + bScore.points;
+                    score += spinPoints;
+                    document.getElementById('score').textContent = score;
+
+                    // Build result message — show all wins this spin
+                    var msgs = [];
+                    if (mScore.label) msgs.push(mScore.label);
+                    if (tScore.label) msgs.push(tScore.label);
+                    if (bScore.label) msgs.push(bScore.label);
+                    var resultEl = document.getElementById('result');
+                    resultEl.textContent = msgs.length > 0 ? msgs.join('  |  ') : 'No match. Try again!';
+
+                    if (spinsLeft <= 0) {
+                        document.getElementById('spin-btn').textContent = 'Game Over!';
+                        document.getElementById('spin-btn').style.background = '#555';
+                        document.getElementById('spin-btn').style.cursor = 'default';
+                        resultEl.textContent = 'Final Score: ' + score;
+                    } else {
+                        document.getElementById('spin-btn').style.opacity = '1';
+                    }
+
+                    spinning = false;
+                }
+            }, 60);
+        }
+
+        setRow('t', getRandom(), getRandom(), getRandom());
+        setRow('m', getRandom(), getRandom(), getRandom());
+        setRow('b', getRandom(), getRandom(), getRandom());
+    </script>
+
+</body>
+</html>
