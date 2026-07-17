@@ -67,9 +67,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="casino.css" />
     <Content Include="Default.aspx" />
     <Content Include="index.html" />
+    <Content Include="lobby.css" />
+    <Content Include="memory.css" />
     <Content Include="memory.html" />
+    <Content Include="slots.css" />
     <Content Include="slots.html" />
     <Content Include="Web.config" />
   </ItemGroup>

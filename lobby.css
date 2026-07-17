@@ -1,0 +1,18 @@
+/* index.html - Lobby page styles */
+
+body { justify-content: center; min-height: 100vh; padding: 20px; }
+.app-link { margin-bottom: 24px; }
+.subtitle { text-align: center; color: #aaa; margin: 0 0 40px; font-size: clamp(13px, 3.5vw, 16px); }
+.cards { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+.card {
+    width: clamp(160px, 42vw, 220px);
+    background: #16213e;
+    border: 2px solid #0f3460;
+    border-radius: 14px;
+    padding: 24px 16px;
+    text-align: center;
+}
+.card:hover { border-color: #e94560; }
+.card-icon { font-size: clamp(40px, 10vw, 56px); margin-bottom: 12px; }
+.card-title { font-size: clamp(15px, 4vw, 18px); font-weight: bold; color: #fff; margin-bottom: 8px; }
+.card-desc { font-size: clamp(11px, 3vw, 13px); color: #aaa; margin-bottom: 18px; }
