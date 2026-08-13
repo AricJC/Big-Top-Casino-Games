@@ -15,7 +15,7 @@
 
     <div class="cards">
 
-        <a href="memory.html">
+        <a href="memory.html" id="memory-link">
             <div class="card">
                 <div class="card-icon">&#x1F3AD;</div>
                 <div class="card-title">Memory Match</div>
@@ -24,7 +24,7 @@
             </div>
         </a>
 
-        <a href="slots.html">
+        <a href="slots.html" id="slots-link">
             <div class="card">
                 <div class="card-icon">&#x1F3B0;</div>
                 <div class="card-title">Big Top Slots</div>
@@ -39,6 +39,11 @@
 
     <script>
         document.getElementById('debug-url').textContent = window.location.href + ' | search: ' + window.location.search;
+
+        if (window.location.search) {
+            document.getElementById('memory-link').href = 'memory.html' + window.location.search;
+            document.getElementById('slots-link').href  = 'slots.html' + window.location.search;
+        }
     </script>
 
 </body>

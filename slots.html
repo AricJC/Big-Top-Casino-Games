@@ -55,7 +55,39 @@
 
     <a href="index.html" class="back">&#x2B05; Back to Games</a>
 
+    <p id="debug-url" style="font-size:10px;color:#000;margin-top:20px;"></p>
+
     <script>
+        var SCORE_SERVICE_URL = 'https://resources.imwca.org/GameService/Score.asmx';
+
+        var urlParams = new URLSearchParams(window.location.search);
+        var eventmobiUser = urlParams.get('eventmobi_user');
+
+        document.getElementById('debug-url').textContent = window.location.href + ' | eventmobi_user: ' + eventmobiUser;
+
+        var GAME_CLIENT_KEY = '3f2b1a4c-7e9d-4a12-9f3e-6d8c5b2a1f0e';
+
+        function submitScore(points) {
+            if (!eventmobiUser) {
+                console.log('No eventmobi_user found in URL, skipping score submission.');
+                return;
+            }
+
+            fetch(SCORE_SERVICE_URL + '/SubmitScore', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                body: JSON.stringify({
+                    external_id: eventmobiUser,
+                    game: 'slots',
+                    points: points,
+                    client_key: GAME_CLIENT_KEY
+                })
+            })
+            .then(function (response) { return response.json(); })
+            .then(function (data) { console.log('Score submitted:', data); })
+            .catch(function (err) { console.log('Score submission failed:', err); });
+        }
+
         var STAR = '\u2B50';
 
         var symbols = [
@@ -160,6 +192,7 @@
                         document.getElementById('spin-btn').style.background = '#555';
                         document.getElementById('spin-btn').style.cursor = 'default';
                         resultEl.textContent = 'Final Score: ' + score;
+                        submitScore(score);
                     } else {
                         document.getElementById('spin-btn').style.opacity = '1';
                     }
