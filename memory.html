@@ -23,7 +23,7 @@
 
     <button class="restart-btn" onclick="init()">Restart</button>
 
-    <a href="index.html" class="back">&#x2B05; Back to Games</a>
+    <a href="index.html" class="back" id="back-link">&#x2B05; Back to Games</a>
 
     <p id="debug-url" style="font-size:10px;color:#000;margin-top:20px;"></p>
 
@@ -35,6 +35,10 @@
         var eventmobiUser = urlParams.get('eventmobi_user');
 
         document.getElementById('debug-url').textContent = window.location.href + ' | eventmobi_user: ' + eventmobiUser;
+
+        if (window.location.search) {
+            document.getElementById('back-link').href = 'index.html' + window.location.search;
+        }
 
         function submitScore(points) {
             if (!eventmobiUser) {
