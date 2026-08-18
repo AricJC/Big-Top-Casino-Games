@@ -69,6 +69,7 @@
   <ItemGroup>
     <Content Include="casino.css" />
     <Content Include="Default.aspx" />
+    <Content Include="GamesService\Default.aspx" />
     <Content Include="index.html" />
     <Content Include="lobby.css" />
     <Content Include="memory.css" />
@@ -78,6 +79,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\EM.cs" />
+    <Compile Include="GamesService\API\EM.cs" />
+    <Compile Include="GamesService\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

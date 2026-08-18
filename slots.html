@@ -55,175 +55,159 @@
 
     <a href="index.html" class="back" id="back-link">&#x2B05; Back to Games</a>
 
-    <p id="debug-url" style="font-size:10px;color:#000;margin-top:20px;line-height:1.4;"></p>
-
     <script>
-        var SCORE_SERVICE_URL = 'https://imwcaapps.imwca.org/GameService/Score.asmx';
-        var GAME_CLIENT_KEY = '3f2b1a4c-7e9d-4a12-9f3e-6d8c5b2a1f0e';
+    var SCORE_SERVICE_URL = 'https://imwcaapps.imwca.org/GameService/Score.asmx';
+    var GAME_CLIENT_KEY = '3f2b1a4c-7e9d-4a12-9f3e-6d8c5b2a1f0e';
 
-        var urlParams = new URLSearchParams(window.location.search);
-        var eventmobiUser = urlParams.get('eventmobi_user');
+    var urlParams = new URLSearchParams(window.location.search);
+    var eventmobiUser = urlParams.get('eventmobi_user');
 
-        var debugLines = [];
-        debugLines.push('Page: ' + window.location.href);
-        debugLines.push('Origin: ' + window.location.origin);
-        debugLines.push('Search: ' + window.location.search);
-        debugLines.push('eventmobi_user: ' + (eventmobiUser || '(missing)'));
-        debugLines.push('Service: ' + SCORE_SERVICE_URL);
-        debugLines.push('UA: ' + navigator.userAgent);
+    if (window.location.search) {
+        document.getElementById('back-link').href = 'index.html' + window.location.search;
+    }
 
-        document.getElementById('debug-url').textContent = debugLines.join('\n');
-
-        if (window.location.search) {
-            document.getElementById('back-link').href = 'index.html' + window.location.search;
+    function submitScore(points) {
+        if (!eventmobiUser) {
+            console.log('No eventmobi_user found in URL, skipping score submission.');
+            return;
         }
 
-        function submitScore(points) {
-            if (!eventmobiUser) {
-                console.log('No eventmobi_user found in URL, skipping score submission.');
-                return;
-            }
-
-            fetch(SCORE_SERVICE_URL + '/SubmitScore', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json; charset=utf-8' },
-                body: JSON.stringify({
-                    external_id: eventmobiUser,
-                    game: 'slots',
-                    points: points,
-                    client_key: GAME_CLIENT_KEY
-                })
+        fetch(SCORE_SERVICE_URL + '/SubmitScore', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({
+                external_id: eventmobiUser,
+                game: 'slots',
+                points: points,
+                client_key: GAME_CLIENT_KEY
             })
-            .then(function (response) { return response.text(); })
-            .then(function (data) {
-                console.log('Score submitted:', data);
-                var debugEl = document.getElementById('debug-url');
-                debugEl.textContent += '\nSubmit: OK\nResponse: ' + data;
-            })
-            .catch(function (err) {
-                console.log('Score submission failed:', err);
-                var debugEl = document.getElementById('debug-url');
-                debugEl.textContent += '\nSubmit: FAILED\nError: ' + err;
-            });
+        })
+        .then(function (response) { return response.text(); })
+        .then(function (data) {
+            console.log('Score submitted:', data);
+        })
+        .catch(function (err) {
+            console.log('Score submission failed:', err);
+        });
+    }
+
+    var STAR = '\u2B50';
+
+    var symbols = [
+        '\uD83C\uDFAA',
+        '\uD83C\uDFA9',
+        '\uD83E\uDD39',
+        '\uD83E\uDD81',
+        '\uD83C\uDFB0',
+        '\uD83C\uDFAD',
+        '\uD83C\uDFA0',
+        '\uD83C\uDFAF',
+        STAR,
+        '\uD83C\uDFB2'
+    ];
+
+    var spinsLeft = 10;
+    var score = 0;
+    var spinning = false;
+
+    function getRandom() {
+        return symbols[Math.floor(Math.random() * symbols.length)];
+    }
+
+    function setRow(prefix, s1, s2, s3) {
+        document.getElementById(prefix + '1').textContent = s1;
+        document.getElementById(prefix + '2').textContent = s2;
+        document.getElementById(prefix + '3').textContent = s3;
+    }
+
+    function setBorderColor(prefix, color) {
+        document.getElementById(prefix + '1').style.borderColor = color;
+        document.getElementById(prefix + '2').style.borderColor = color;
+        document.getElementById(prefix + '3').style.borderColor = color;
+    }
+
+    function scoreRow(a, b, c, isMiddle) {
+        var isTriple = (a === b && b === c);
+        var isPair   = (a === b || b === c || a === c);
+        if (isTriple) {
+            if (a === STAR) return { points: 1000, label: '\u2B50\u2B50\u2B50 MEGA JACKPOT! +1000' };
+            var base = isMiddle ? 15 : 4;
+            return { points: base * 2, label: isMiddle ? 'Center 3 of a Kind! +' + (base * 2) : 'Row 3 of a Kind! +' + (base * 2) };
         }
-
-        var STAR = '\u2B50';
-
-        var symbols = [
-            '\uD83C\uDFAA',
-            '\uD83C\uDFA9',
-            '\uD83E\uDD39',
-            '\uD83E\uDD81',
-            '\uD83C\uDFB0',
-            '\uD83C\uDFAD',
-            '\uD83C\uDFA0',
-            '\uD83C\uDFAF',
-            STAR,
-            '\uD83C\uDFB2'
-        ];
-
-        var spinsLeft = 10;
-        var score = 0;
-        var spinning = false;
-
-        function getRandom() {
-            return symbols[Math.floor(Math.random() * symbols.length)];
+        if (isPair) {
+            if (isMiddle) return { points: 10, label: 'Center Pair! +10' };
+            return { points: 2, label: 'Pair! +2' };
         }
+        return { points: 0, label: '' };
+    }
 
-        function setRow(prefix, s1, s2, s3) {
-            document.getElementById(prefix + '1').textContent = s1;
-            document.getElementById(prefix + '2').textContent = s2;
-            document.getElementById(prefix + '3').textContent = s3;
-        }
+    function spin() {
+        if (spinning || spinsLeft <= 0) return;
+        spinning = true;
+        spinsLeft--;
+        document.getElementById('spins').textContent = spinsLeft;
+        document.getElementById('result').textContent = '';
+        document.getElementById('spin-btn').style.opacity = '0.5';
 
-        function setBorderColor(prefix, color) {
-            document.getElementById(prefix + '1').style.borderColor = color;
-            document.getElementById(prefix + '2').style.borderColor = color;
-            document.getElementById(prefix + '3').style.borderColor = color;
-        }
+        var ticks = 0;
+        var maxTicks = 20;
+        var interval = setInterval(function () {
+            setRow('t', getRandom(), getRandom(), getRandom());
+            setRow('m', getRandom(), getRandom(), getRandom());
+            setRow('b', getRandom(), getRandom(), getRandom());
+            ticks++;
 
-        function scoreRow(a, b, c, isMiddle) {
-            var isTriple = (a === b && b === c);
-            var isPair   = (a === b || b === c || a === c);
-            if (isTriple) {
-                if (a === STAR) return { points: 1000, label: '\u2B50\u2B50\u2B50 MEGA JACKPOT! +1000' };
-                var base = isMiddle ? 15 : 4;
-                return { points: base * 2, label: isMiddle ? 'Center 3 of a Kind! +' + (base * 2) : 'Row 3 of a Kind! +' + (base * 2) };
-            }
-            if (isPair) {
-                if (isMiddle) return { points: 10, label: 'Center Pair! +10' };
-                return { points: 2, label: 'Pair! +2' };
-            }
-            return { points: 0, label: '' };
-        }
+            if (ticks >= maxTicks) {
+                clearInterval(interval);
 
-        function spin() {
-            if (spinning || spinsLeft <= 0) return;
-            spinning = true;
-            spinsLeft--;
-            document.getElementById('spins').textContent = spinsLeft;
-            document.getElementById('result').textContent = '';
-            document.getElementById('spin-btn').style.opacity = '0.5';
+                var t1 = getRandom(), t2 = getRandom(), t3 = getRandom();
+                var m1 = getRandom(), m2 = getRandom(), m3 = getRandom();
+                var b1 = getRandom(), b2 = getRandom(), b3 = getRandom();
+                setRow('t', t1, t2, t3);
+                setRow('m', m1, m2, m3);
+                setRow('b', b1, b2, b3);
 
-            var ticks = 0;
-            var maxTicks = 20;
-            var interval = setInterval(function () {
-                setRow('t', getRandom(), getRandom(), getRandom());
-                setRow('m', getRandom(), getRandom(), getRandom());
-                setRow('b', getRandom(), getRandom(), getRandom());
-                ticks++;
+                setBorderColor('t', '#0f3460');
+                setBorderColor('m', '#0f3460');
+                setBorderColor('b', '#0f3460');
 
-                if (ticks >= maxTicks) {
-                    clearInterval(interval);
+                var tScore = scoreRow(t1, t2, t3, false);
+                var mScore = scoreRow(m1, m2, m3, true);
+                var bScore = scoreRow(b1, b2, b3, false);
 
-                    var t1 = getRandom(), t2 = getRandom(), t3 = getRandom();
-                    var m1 = getRandom(), m2 = getRandom(), m3 = getRandom();
-                    var b1 = getRandom(), b2 = getRandom(), b3 = getRandom();
-                    setRow('t', t1, t2, t3);
-                    setRow('m', m1, m2, m3);
-                    setRow('b', b1, b2, b3);
+                if (tScore.points > 0) setBorderColor('t', tScore.points >= 8 ? '#e94560' : '#aaa');
+                if (mScore.points > 0) setBorderColor('m', mScore.points >= 30 ? '#e94560' : '#aaa');
+                if (bScore.points > 0) setBorderColor('b', bScore.points >= 8 ? '#e94560' : '#aaa');
 
-                    setBorderColor('t', '#0f3460');
-                    setBorderColor('m', '#0f3460');
-                    setBorderColor('b', '#0f3460');
+                var spinPoints = tScore.points + mScore.points + bScore.points;
+                score += spinPoints;
+                document.getElementById('score').textContent = score;
 
-                    var tScore = scoreRow(t1, t2, t3, false);
-                    var mScore = scoreRow(m1, m2, m3, true);
-                    var bScore = scoreRow(b1, b2, b3, false);
+                var msgs = [];
+                if (mScore.label) msgs.push(mScore.label);
+                if (tScore.label) msgs.push(tScore.label);
+                if (bScore.label) msgs.push(bScore.label);
+                var resultEl = document.getElementById('result');
+                resultEl.textContent = msgs.length > 0 ? msgs.join('  |  ') : 'No match. Try again!';
 
-                    if (tScore.points > 0) setBorderColor('t', tScore.points >= 8 ? '#e94560' : '#aaa');
-                    if (mScore.points > 0) setBorderColor('m', mScore.points >= 30 ? '#e94560' : '#aaa');
-                    if (bScore.points > 0) setBorderColor('b', bScore.points >= 8 ? '#e94560' : '#aaa');
-
-                    var spinPoints = tScore.points + mScore.points + bScore.points;
-                    score += spinPoints;
-                    document.getElementById('score').textContent = score;
-
-                    var msgs = [];
-                    if (mScore.label) msgs.push(mScore.label);
-                    if (tScore.label) msgs.push(tScore.label);
-                    if (bScore.label) msgs.push(bScore.label);
-                    var resultEl = document.getElementById('result');
-                    resultEl.textContent = msgs.length > 0 ? msgs.join('  |  ') : 'No match. Try again!';
-
-                    if (spinsLeft <= 0) {
-                        document.getElementById('spin-btn').textContent = 'Game Over!';
-                        document.getElementById('spin-btn').style.background = '#555';
-                        document.getElementById('spin-btn').style.cursor = 'default';
-                        resultEl.textContent = 'Final Score: ' + score;
-                        submitScore(score);
-                    } else {
-                        document.getElementById('spin-btn').style.opacity = '1';
-                    }
-
-                    spinning = false;
+                if (spinsLeft <= 0) {
+                    document.getElementById('spin-btn').textContent = 'Game Over!';
+                    document.getElementById('spin-btn').style.background = '#555';
+                    document.getElementById('spin-btn').style.cursor = 'default';
+                    resultEl.textContent = 'Final Score: ' + score;
+                    submitScore(score);
+                } else {
+                    document.getElementById('spin-btn').style.opacity = '1';
                 }
-            }, 60);
-        }
 
-        setRow('t', getRandom(), getRandom(), getRandom());
-        setRow('m', getRandom(), getRandom(), getRandom());
-        setRow('b', getRandom(), getRandom(), getRandom());
+                spinning = false;
+            }
+        }, 60);
+    }
+
+    setRow('t', getRandom(), getRandom(), getRandom());
+    setRow('m', getRandom(), getRandom(), getRandom());
+    setRow('b', getRandom(), getRandom(), getRandom());
     </script>
 
 </body>
