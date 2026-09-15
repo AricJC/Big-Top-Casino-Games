@@ -76,6 +76,7 @@
     <Content Include="memory.html" />
     <Content Include="slots.css" />
     <Content Include="slots.html" />
+    <Content Include="video1.html" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\EM.cs" />
