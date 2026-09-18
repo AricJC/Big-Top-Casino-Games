@@ -71,6 +71,7 @@
     <Content Include="Default.aspx" />
     <Content Include="GamesService\Default.aspx" />
     <Content Include="index.html" />
+    <Content Include="InsiderInfo.html" />
     <Content Include="lobby.css" />
     <Content Include="memory.css" />
     <Content Include="memory.html" />
