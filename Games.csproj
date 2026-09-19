@@ -70,6 +70,8 @@
     <Content Include="casino.css" />
     <Content Include="Default.aspx" />
     <Content Include="GamesService\Default.aspx" />
+    <Content Include="Image5.html" />
+    <Content Include="Image4.html" />
     <Content Include="Image3.html" />
     <Content Include="Image2.html" />
     <Content Include="Image1.html" />
